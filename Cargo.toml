@@ -16,6 +16,7 @@ name = "rust_api"
 [dependencies]
 actix-web = "4"
 tokio = { version = "=1.14.0", features = ["full"] }
+serde = { version = "1", features = ["derive"]}
 
 
 [dev-dependencies]
