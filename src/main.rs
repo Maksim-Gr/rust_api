@@ -1,6 +1,6 @@
 use rust_api::configuration::get_configuration;
 use rust_api::startup::run;
-use sqlx::{Connection, PgConnection, PgPool};
+use sqlx::{Connection, PgPool};
 use std::net::TcpListener;
 
 #[tokio::main]
