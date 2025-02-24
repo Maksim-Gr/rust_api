@@ -16,7 +16,7 @@ pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> Ht
     INSERT INTO subscriptions (id, email, name, subscribed_at)
     VALUES ($1, $2, $3, $4)
             "#,
-        chrono::Uuid::new_v4(),
+        Uuid::new_v4(),
         form.email,
         form.name,
         Utc::now()
