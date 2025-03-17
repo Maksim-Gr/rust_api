@@ -1,14 +1,8 @@
-use env_logger::Env;
 use rust_api::configuration::get_configuration;
 use rust_api::startup::run;
 use rust_api::telemetry::{get_subscriber, init_subscriber};
 use sqlx::PgPool;
 use std::net::TcpListener;
-use tracing::subscriber::set_global_default;
-use tracing::Subscriber;
-use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
-use tracing_log::LogTracer;
-use tracing_subscriber::{layer::SubscriberExt, EnvFilter, Registry};
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
