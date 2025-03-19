@@ -6,7 +6,7 @@ use std::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    let subscriber = get_subscriber("rust_api".into(), "info".into());
+    let subscriber = get_subscriber("rust_api".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
 
     let configuration = get_configuration().expect("Failed to read configuration.");
@@ -19,3 +19,6 @@ async fn main() -> std::io::Result<()> {
     run(listener, connection)?.await?;
     Ok(())
 }
+
+
+
