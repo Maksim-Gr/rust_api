@@ -9,17 +9,18 @@ pub struct FormData {
     name: String,
 }
 
+// attach all arguments to the span context
+#[tracing::instrument(
+    name = "Adding a new subscriber",
+    skip(form, pool),
+    fields(
+request_id = %Uuid::new_v4(),
+subscriber_email = %form.email,
+subscriber_name= %form.name
+    )
+)]
 pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> HttpResponse {
-    let request_id = Uuid::new_v4();
-    let request_span = tracing::info_span!(
-        "adding new subscriber",
-        %request_id,
-        subscriber_email = %form.name,
-        subscriber_name = %form.email
-    );
-    let _request_span_guard = request_span.enter();
-    let query_span =
-        tracing::info_span!("request_id '{}' - saving new subscription to the database");
+    let query_span = tracing::info_span!("Saving new subscriber to the database");
     match sqlx::query!(
         r#"
     INSERT INTO subscriptions (id, email, name, subscribed_at)
