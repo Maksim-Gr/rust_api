@@ -25,23 +25,23 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     settings.try_deserialize::<Settings>()
 }
 impl DatabaseSettings {
-    pub fn connection_string(&self) -> String {
-        format!(
+    pub fn connection_string(&self) -> Secret<String> {
+        Secret::new(format!(
             "postgres://{}:{}@{}:{}/{}",
             self.username,
             self.password.expose_secret(),
             self.host,
             self.port,
             self.database_name
-        )
+        ))
     }
-    pub fn connection_string_without_db(&self) -> String {
-        format!(
+    pub fn connection_string_without_db(&self) -> Secret<String> {
+        Secret::new(format!(
             "postgres://{}:{}@{}:{}",
             self.username,
             self.password.expose_secret(),
             self.host,
             self.port
-        )
+        ))
     }
 }
