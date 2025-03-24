@@ -3,7 +3,7 @@ use secrecy::{ExposeSecret, Secret};
 #[derive(serde::Deserialize)]
 pub struct Settings {
     pub database: DatabaseSettings,
-    pub application_port: u16,
+    pub application: ApplicationSettings,
 }
 
 #[derive(serde::Deserialize, Clone)]
@@ -15,14 +15,16 @@ pub struct DatabaseSettings {
     pub database_name: String,
 }
 
+#[derive(serde::Deserialize)]
+pub struct ApplicationSettings {
+    pub port: u16,
+    pub host: String,
+}
+
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
-    let settings = config::Config::builder()
-        .add_source(config::File::new(
-            "configuration.yaml",
-            config::FileFormat::Yaml,
-        ))
-        .build()?;
-    settings.try_deserialize::<Settings>()
+    let mut settings = config::Config::default();
+    settings.merge(config::File::with_name("configuration"))?;
+    settings.try_into()
 }
 impl DatabaseSettings {
     pub fn connection_string(&self) -> Secret<String> {
