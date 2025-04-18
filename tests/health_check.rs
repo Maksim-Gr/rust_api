@@ -4,6 +4,7 @@ use rust_api::startup::run;
 use rust_api::telemetry::{get_subscriber, init_subscriber};
 use secrecy::ExposeSecret;
 use sqlx::{query, Connection, Executor, PgConnection, PgPool};
+use std::arch::aarch64::vcle_f32;
 use std::net::TcpListener;
 use uuid::Uuid;
 
@@ -113,6 +114,34 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
             "The API did not fail with 400 Bad request when payload was {}.",
             error_message
         )
+    }
+}
+
+#[tokio::test]
+async fn subscribe_returns_a_200_when_fields_are_present_but_empty() {
+    let app = spawn_app().await;
+    let client = reqwest::Client::new();
+    let test_cases = vec![
+        ("name=&email=ursula_le_guin%40gmail.com", "empty name"),
+        ("name=Ursula&email=", "empty email"),
+        ("name=Ursula&email=definitely-not-an-email", "invalid email"),
+    ];
+
+    for (body, description) in test_cases {
+        let response = client
+            .post(&format!("{}/subscriptions", &app.address))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to execute request.");
+
+        assert_eq!(
+            200,
+            response.status().as_u16(),
+            "The API did not fail with 200 Bad request when payload was {}.",
+            description
+        );
     }
 }
 
