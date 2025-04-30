@@ -47,7 +47,7 @@ VALUES ($1, $2, $3, $4)
 "#,
         Uuid::new_v4(),
         new_subscriber.email,
-        new_subscriber.name,
+        new_subscriber.name.inner_ref(),
         Utc::now()
     )
     .execute(pool)
