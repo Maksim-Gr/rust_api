@@ -30,3 +30,15 @@ impl AsRef<str> for SubscriberName {
         &self.0
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::domain::SubscriberName;
+    use claim::{assert_err, assert_ok};
+
+    #[test]
+    fn a_256_grapheme_is_valid_name() {
+        let name = "a".repeat(256);
+        assert_ok!(SubscriberName::parse(name));
+    }
+}
